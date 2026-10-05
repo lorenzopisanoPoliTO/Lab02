@@ -1,21 +1,80 @@
+import csv
+
 def carica_da_file(file_path):
     """Carica le foto dal file, creando un nuovo anno ogni volta che compare per la prima volta"""
     # TODO
+    with open(file_path, 'r') as csvfile:
+        album = {}
+        reader = csv.DictReader(csvfile, skipinitialspace= True)    # Ora il file è una lista di dizionari
+        for row in reader:          # Per ogni dizionario della lista
+            #anno = int(row['anno']) # Trasforma la chiave in un intero
+            if row['anno'] not in album:   # Se la chiave 'anno' non è presente nel dizionario album
+                album[row['anno']] = []    # allora la chiave "valore della chiave 'row['anno']'" è una chiave il cui valore è una lista vuota
+            album[row['anno']].append(row) # Una volta che la chiave è stata creata, aggiungi il dizionario row alla lista di valori
+        print(row.keys())
+    return album
+
 
 
 def aggiungi_foto(album, codice, titolo, autore, mese, anno, file_path):
     """Aggiunge una foto all'album, creando l'anno al volo se non è ancora presente"""
     # TODO
 
+    '''
+    with open(file_path, 'r') as csvfile:
+        album = {}
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            if row[' anno'] not in album:
+                album[row[' anno']] = []
+            album[row[' anno']].append(row)
+    '''
+
+    foto = {
+        'codice' : codice,
+        'titolo' : titolo,
+        'autore' : autore,
+        'mese' : mese,
+        'anno' : anno,
+    }
+    if foto['anno'] not in album:
+        album[foto['anno']] = []
+    album[foto['anno']].append(foto)
+
+    with open(file_path, 'a', newline= '', encoding= 'utf-8') as csvfile:
+        campi = ['codice', 'titolo', 'autore', 'mese', 'anno']
+        writer = csv.DictWriter(csvfile, fieldnames=campi)
+        writer.writerow(foto)
+
+
+
+
+    return album
+
+
 
 def cerca_foto(album, codice):
     """Cerca una foto nell'album dato il codice"""
     # TODO
+    for anno in album: #Album è un dizionario, le chiavi sono gli anni
+        for foto in album[anno]: #per ogni foto di ogni chiave del dizionario 'anno'
+            if foto['codice'] == codice: #se il codice della foto è uguale al codice inserito
+                '''for chiave in foto:
+                    print(foto[chiave])'''
+                print(f'{foto['codice']}, {foto['titolo']}, {foto['autore']}, {foto['mese']}, {foto['anno']}') #stampa la foto
+                
 
 
 def elenco_foto_anno_per_titolo(album, anno):
     """Ordina i titoli delle foto di un dato anno in ordine alfabetico"""
     # TODO
+    for anno in album:
+        album_ordinato = sorted(album[anno], key=lambda k: k['titolo'])
+    print(f'{anno} : {album_ordinato}')
+    return album_ordinato
+
+
+
 
 
 def main():
